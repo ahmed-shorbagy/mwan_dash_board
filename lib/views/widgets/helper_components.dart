@@ -168,11 +168,7 @@ class TableContainer extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          SizedBox(
-            height: 500, // Fixed height for the table
-            width: double.infinity, // Fill the entire width
-            child: table,
-          ),
+          table, // No fixed height here
         ],
       ),
     );

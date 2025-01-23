@@ -111,89 +111,170 @@ class ProjectStageCard extends StatelessWidget {
   }
 }
 
-class ProjectDistributionCard extends StatelessWidget {
+class ProjectDistributionCard extends StatefulWidget {
   const ProjectDistributionCard({super.key});
+
+  @override
+  _ProjectDistributionCardState createState() =>
+      _ProjectDistributionCardState();
+}
+
+class _ProjectDistributionCardState extends State<ProjectDistributionCard>
+    with SingleTickerProviderStateMixin {
+  int? _hoveredIndex;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onSectionHover(int index) {
+    setState(() {
+      _hoveredIndex = index;
+      _controller.forward();
+    });
+  }
+
+  void _onSectionExit() {
+    setState(() {
+      _hoveredIndex = null;
+      _controller.reverse();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final data = [
-      ('الدائرة الرئيسية', 41, Colors.blue),
-      ('إدارة المشاريع', 53, Colors.orange),
-      ('الدائرة الثانية', 45, Colors.yellow),
-      ('الدائرة الثالثة', 36, Colors.green),
+      ('ثانيا الرئيس', 41, Colors.blue),
+      ('فارغ', 36, Colors.orange),
+      ('الرئيس الثاني', 45, Colors.yellow),
     ];
 
     return DashboardContainer(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Top-left button
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.menu, color: Colors.white),
+                onPressed: () {
+                  // Handle button press
+                },
+              ),
+              const Spacer(),
+            ],
+          ),
+          const SizedBox(height: 8),
           Text('توزيع المشاريع', style: AppStyles.tajawalBold19_2),
           const SizedBox(height: 8),
-          Text('بالنسبة للمشاريع وحالة التقدم',
+          Text('بالنسبة للأقسام وحالة التقدم',
               style: AppStyles.tajawalLight12.copyWith(color: Colors.white70)),
-          Expanded(
-            child: Stack(
-              children: [
-                PieChart(
-                  PieChartData(
-                    sectionsSpace: 0,
-                    centerSpaceRadius: 50,
-                    sections: data
-                        .map((item) => PieChartSectionData(
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              // Pie Chart
+              Expanded(
+                flex: 2,
+                child: SizedBox(
+                  width: 200, // Smaller chart width
+                  height: 200, // Smaller chart height
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      PieChart(
+                        PieChartData(
+                          sectionsSpace: 0,
+                          centerSpaceRadius: 50,
+                          sections: data.asMap().entries.map((entry) {
+                            final index = entry.key;
+                            final item = entry.value;
+                            final isHovered = _hoveredIndex == index;
+
+                            return PieChartSectionData(
                               value: item.$2.toDouble(),
                               color: item.$3,
-                              title: '${((item.$2 / 180) * 100).toInt()}%',
-                              radius: 60,
+                              title:
+                                  '${((item.$2 / 122) * 100).toStringAsFixed(2)}%',
+                              radius: isHovered ? 60 : 50, // Grow on hover
                               titleStyle: AppStyles.tajawalBold19_2
                                   .copyWith(color: Colors.white),
                               showTitle: true,
-                            ))
-                        .toList(),
-                  ),
-                ),
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '180',
-                        style: AppStyles.tajawalBold24,
+                            );
+                          }).toList(),
+                        ),
                       ),
-                      Text(
-                        'الكل',
-                        style: AppStyles.tajawalLight14
-                            .copyWith(color: Colors.white70),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '122',
+                            style: AppStyles.tajawalBold24
+                                .copyWith(color: Colors.white),
+                          ),
+                          Text(
+                            'الكل',
+                            style: AppStyles.tajawalLight14
+                                .copyWith(color: Colors.white70),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          // Legend
-          Wrap(
-            spacing: 16,
-            children: data
-                .map((item) => Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 12,
-                          height: 12,
-                          decoration: BoxDecoration(
-                            color: item.$3,
-                            shape: BoxShape.circle,
+              ),
+              const SizedBox(width: 16),
+              // Legend
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...data.map((item) {
+                      return MouseRegion(
+                        onEnter: (_) => _onSectionHover(data.indexOf(item)),
+                        onExit: (_) => _onSectionExit(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  color: item.$3,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                item.$1,
+                                style: AppStyles.tajawalLight12
+                                    .copyWith(color: Colors.white70),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          item.$1,
-                          style: AppStyles.tajawalLight12
-                              .copyWith(color: Colors.white70),
-                        ),
-                      ],
-                    ))
-                .toList(),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),

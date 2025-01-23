@@ -15,8 +15,8 @@ class CustomTable extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width, // Fill the entire width
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: DataTable(
           border: TableBorder(
             verticalInside: BorderSide(color: Color(0xff2E2E2E)),
@@ -47,8 +47,8 @@ class CustomTable extends StatelessWidget {
               // Apply alternating row colors
               final backgroundColor = index.isEven
                   ? Colors.transparent // Default background (transparent)
-                  : kPrimaryColor.withValues(
-                      alpha: 0.5); // Primary color with opacity
+                  : kPrimaryColor
+                      .withOpacity(0.5); // Primary color with opacity
 
               return DataRow(
                 color: WidgetStateProperty.resolveWith<Color>(
