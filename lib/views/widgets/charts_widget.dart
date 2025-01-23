@@ -334,10 +334,10 @@ class CoordinatorVisitsChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('عدد المشاريع للدورات التنفيذية',
+          Text("عدد المشاريع للإدارات التنفيذية",
               style: AppStyles.tajawalBold19_2),
           const SizedBox(height: 8),
-          Text('عرض اجمالي المشروع في هذه الفترة بشكل تسجيلي',
+          Text("عرض اجمالي المشاريع مع قيم العقود الحالية بشكل شخطي",
               style: AppStyles.tajawalLight12.copyWith(color: Colors.white70)),
           Expanded(
             child: LineChart(
@@ -415,7 +415,7 @@ class DashboardCharts extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 800,
+          height: 400,
           child: Row(
             children: [
               Expanded(
