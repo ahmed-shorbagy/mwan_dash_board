@@ -1,3 +1,4 @@
+import 'package:dash_board/core/theme/theme_constants.dart';
 import 'package:dash_board/core/utils/app_styles.dart';
 import 'package:dash_board/views/widgets/helper_components.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -9,16 +10,32 @@ class ProjectStageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stages = [
-      'تحديد المشروع',
+      'تنفيذ المشروع',
       'الشراء',
       'تخطيط المشروع',
       'ملغي',
       'قبل بدأ المشروع',
       'الفارغ',
-      'البغانق',
+      'الإغلاق',
     ];
 
-    final values = [0.95, 0.85, 0.75, 0.65, 0.45, 0.35, 0.25];
+    final values = [
+      0.95,
+      0.85,
+      0.75,
+      0.65,
+      0.45,
+      0.35,
+      0.25,
+    ]; // Example progress values
+
+    // Ensure all values are valid (between 0 and 1)
+    final validValues = values.map((value) {
+      if (value.isNaN || value.isInfinite || value < 0 || value > 1) {
+        return 0.0; // Fallback to 0 if the value is invalid
+      }
+      return value.clamp(0.0, 1.0);
+    }).toList();
 
     return DashboardContainer(
       child: Padding(
@@ -26,66 +43,72 @@ class ProjectStageCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
-            Expanded(
-              child: Row(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: stages
-                        .map((stage) => Text(
-                              stage,
-                              style: AppStyles.tajawalLight12
-                                  .copyWith(color: Colors.white70),
-                            ))
-                        .toList(),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: BarChart(
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceAround,
-                        maxY: 1,
-                        barGroups: List.generate(
-                          values.length,
-                          (i) => BarChartGroupData(
-                            x: i,
-                            barRods: [
-                              BarChartRodData(
-                                toY: values[i],
-                                color: Colors.green,
-                                width: 8,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ],
-                          ),
-                        ),
-                        gridData: FlGridData(show: false),
-                        borderData: FlBorderData(show: false),
-                        titlesData: FlTitlesData(show: false),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: values
-                        .map((value) => Text(
-                              '${(value * 100).toInt()}%',
-                              style: AppStyles.tajawalLight12
-                                  .copyWith(color: Colors.white70),
-                            ))
-                        .toList(),
-                  ),
-                ],
-              ),
+            Row(
+              children: [
+                Text('مرحلة المشروع', style: AppStyles.tajawalBold19_2),
+              ],
             ),
             const SizedBox(height: 16),
-            Center(
-              child: Text(
-                '100%',
-                style: AppStyles.tajawalBold20.copyWith(color: Colors.white),
+            Text(
+              'عرض اجمالي المشاريع بالنسبة للنموذج التشغيلي',
+              style: AppStyles.tajawalLight12.copyWith(color: Colors.white70),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: stages.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      children: [
+                        // Stage Label
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            stages[index],
+                            style: AppStyles.tajawalMedium14
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Progress Bar
+                        Expanded(
+                          flex: 3,
+                          child: Container(
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: kPrimaryColor.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    width: validValues[index] * 100,
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                        color: kPrimaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Percentage Value
+                        Text(
+                          '${(validValues[index] * 100).toInt()}%',
+                          style: AppStyles.tajawalLight12
+                              .copyWith(color: Colors.white70),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ],
@@ -305,89 +328,129 @@ class _ProjectDistributionCardState extends State<ProjectDistributionCard>
   }
 }
 
-class RegionalDistributionCard extends StatelessWidget {
-  const RegionalDistributionCard({super.key});
+class SubdivisionsProjectsChart extends StatelessWidget {
+  const SubdivisionsProjectsChart({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final regions = [
-      'مدينة الملك خالد الطبية',
-      'مدينة الملك سعود الطبية',
-      'مستشفى الملك فيصل التخصصي',
-      'مدينة الأمير سلطان الطبية',
-      'المستشفى التخصصي',
+    final categories = [
+      "تمكين المركز",
+      "تحقيق التحول الرقمي في القطاع",
+      "رفع مستويات الامتثال",
+      "تعزيز السلوكيات السليمة",
+      "تعزيز الجاذبية الاستثمارية والأداء",
+      "تنظيم قطاع إدارة الأداء",
     ];
 
-    final values = [45.0, 35.0, 25.0, 40.0, 30.0];
+    final values = [50.0, 45.0, 30.0, 35.0, 40.0, 25.0];
 
     return DashboardContainer(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('توزيع المشاريع للمحافظ الفرعية',
-              style: AppStyles.tajawalBold19_2),
+          // Title
+          Text(
+            "توزيع المشاريع للمحافظ الفرعية",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
           const SizedBox(height: 8),
-          Text('عرض إجمالي المشاريع في كل محافظة مع النسبة الاستراتيجية',
-              style: AppStyles.tajawalLight12.copyWith(color: Colors.white70)),
+          // Subtitle
+          Text(
+            "عرض اجمالي المشاريع في كل محافظة مع الأهداف الاستراتيجية",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Chart
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 24, right: 24),
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: 50,
-                  barGroups: List.generate(
-                    regions.length,
-                    (i) => BarChartGroupData(
-                      x: i,
-                      barRods: [
-                        BarChartRodData(
-                          toY: values[i],
-                          color: const Color(0xFF00FF85),
-                          width: 16,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ],
+            child: BarChart(
+              BarChartData(
+                alignment: BarChartAlignment.spaceAround,
+                maxY: 50,
+                minY: 0,
+                gridData: FlGridData(
+                  show: true,
+                  drawHorizontalLine: true,
+                  drawVerticalLine: false,
+                  horizontalInterval: 10,
+                  getDrawingHorizontalLine: (value) => FlLine(
+                    color: kPrimaryColor.withOpacity(0.1),
+                    strokeWidth: 1,
+                  ),
+                ),
+                titlesData: FlTitlesData(
+                  bottomTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      reservedSize: 80,
+                      getTitlesWidget: (value, meta) {
+                        if (value.toInt() >= 0 &&
+                            value.toInt() < categories.length) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: SizedBox(
+                              width: 60,
+                              child: Text(
+                                categories[value.toInt()],
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 3,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
                     ),
                   ),
-                  gridData: FlGridData(
-                    show: true,
-                    drawVerticalLine: false,
-                    horizontalInterval: 10,
-                    getDrawingHorizontalLine: (value) => FlLine(
-                      color: Colors.white.withOpacity(0.1),
-                      strokeWidth: 1,
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      interval: 10,
+                      getTitlesWidget: (value, meta) => Text(
+                        value.toInt().toString(),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white70,
+                        ),
+                      ),
+                      reservedSize: 30,
                     ),
                   ),
-                  borderData: FlBorderData(show: false),
-                  titlesData: FlTitlesData(
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) => Text(
-                          value.toInt().toString(),
-                          style: AppStyles.tajawalLight12
-                              .copyWith(color: Colors.white70),
+                  rightTitles: AxisTitles(),
+                  topTitles: AxisTitles(),
+                ),
+                borderData: FlBorderData(
+                  show: false,
+                ),
+                barGroups: List.generate(
+                  values.length,
+                  (i) => BarChartGroupData(
+                    x: i,
+                    barRods: [
+                      BarChartRodData(
+                        toY: values[i],
+                        width: 15,
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.circular(12),
+                        backDrawRodData: BackgroundBarChartRodData(
+                          show: true,
+                          toY: 50,
+                          color: kPrimaryColor.withOpacity(0.1),
                         ),
-                        reservedSize: 30,
                       ),
-                    ),
-                    rightTitles: AxisTitles(),
-                    topTitles: AxisTitles(),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        getTitlesWidget: (value, meta) => RotatedBox(
-                          quarterTurns: 1,
-                          child: Text(
-                            regions[value.toInt()],
-                            style: AppStyles.tajawalLight12
-                                .copyWith(color: Colors.white70),
-                          ),
-                        ),
-                        reservedSize: 120,
-                      ),
-                    ),
+                    ],
                   ),
                 ),
               ),
@@ -404,33 +467,40 @@ class CoordinatorVisitsChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final months = [
-      'يناير',
-      'فبراير',
-      'مارس',
-      'ابريل',
-      'مايو',
-      'يونيو',
-      'يوليو',
-      'اغسطس',
-      'سبتمبر',
-      'اكتوبر',
-      'نوفمبر',
-      'ديسمبر'
+    final categories = [
+      "تمكين المركز",
+      "تحقيق التحول الرقمي",
+      "رفع مستويات الاستغلال",
+      "تعزيز السلوكيات السليمة",
+      "تعزيز الجاذبية الاستثمارية",
+      "تنظيم قطاع إدارة الأداء",
+      "رفع كفاءة الموارد",
+      "زيادة التوعية الرقمية",
+      "تطوير أدوات الإبداع",
+      "تحسين نظم الرقابة",
+      "زيادة التعاون المشترك",
+      "إدارة الابتكار",
+      "التوسع في الخدمات",
+      "تعزيز الكفاءة التشغيلية",
+      "تحفيز التغيير الإيجابي",
     ];
+
     final values = [
-      15.0,
-      18.0,
       12.0,
-      16.0,
-      8.0,
-      14.0,
-      17.0,
+      18.0,
       10.0,
+      16.0,
+      20.0,
+      14.0,
+      15.0,
       13.0,
+      17.0,
+      19.0,
       9.0,
       11.0,
-      15.0
+      8.0,
+      12.0,
+      16.0,
     ];
 
     return DashboardContainer(
@@ -450,10 +520,38 @@ class CoordinatorVisitsChart extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: LineChart(
-                LineChartData(
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: 20,
+                  minY: 0,
+                  barTouchData: BarTouchData(
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipColor: (group) {
+                        return Colors.black87;
+                      },
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          "${categories[group.x.toInt()]}\n",
+                          const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "${rod.toY.toInt()}",
+                              style: const TextStyle(
+                                color: kPrimaryColor,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                   gridData: FlGridData(
                     show: true,
+                    drawHorizontalLine: true,
                     drawVerticalLine: false,
                     horizontalInterval: 5,
                     getDrawingHorizontalLine: (value) => FlLine(
@@ -465,21 +563,27 @@ class CoordinatorVisitsChart extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        reservedSize: 60,
                         getTitlesWidget: (value, meta) {
                           if (value.toInt() >= 0 &&
-                              value.toInt() < months.length) {
-                            return RotatedBox(
-                              quarterTurns: 1,
-                              child: Text(
-                                months[value.toInt()],
-                                style: AppStyles.tajawalLight12
-                                    .copyWith(color: Colors.white70),
+                              value.toInt() < categories.length) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: SizedBox(
+                                width: 50, // Restrict width for ellipses
+                                child: Text(
+                                  categories[value.toInt()],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
+                                  textAlign: TextAlign.center,
+                                  style: AppStyles.tajawalLight11_2
+                                      .copyWith(color: Colors.white70),
+                                ),
                               ),
                             );
                           }
                           return const SizedBox.shrink();
                         },
-                        reservedSize: 60,
                       ),
                     ),
                     leftTitles: AxisTitles(
@@ -497,23 +601,28 @@ class CoordinatorVisitsChart extends StatelessWidget {
                     rightTitles: AxisTitles(),
                     topTitles: AxisTitles(),
                   ),
-                  borderData: FlBorderData(show: false),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: List.generate(
-                        months.length,
-                        (i) => FlSpot(i.toDouble(), values[i]),
-                      ),
-                      isCurved: true,
-                      color: const Color(0xFF00FF85),
-                      barWidth: 2,
-                      dotData: FlDotData(show: true),
+                  borderData: FlBorderData(
+                    show: false,
+                  ),
+                  barGroups: List.generate(
+                    values.length,
+                    (i) => BarChartGroupData(
+                      x: i,
+                      barRods: [
+                        BarChartRodData(
+                          toY: values[i],
+                          width: 12,
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.circular(12),
+                          backDrawRodData: BackgroundBarChartRodData(
+                            show: true,
+                            toY: 20, // Max value for the bar
+                            color: kPrimaryColor.withOpacity(0.1),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                  minX: 0,
-                  maxX: months.length - 1,
-                  minY: 0,
-                  maxY: 20,
+                  ),
                 ),
               ),
             ),
@@ -564,34 +673,6 @@ class ProjectCoordinatorsCard extends StatelessWidget {
             Row(
               children: [
                 Text('منسقين المشاريع', style: AppStyles.tajawalBold19_2),
-                const Spacer(),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'الأقسام',
-                    style:
-                        AppStyles.tajawalLight12.copyWith(color: Colors.green),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    'حالة المشاريع',
-                    style:
-                        AppStyles.tajawalLight12.copyWith(color: Colors.blue),
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 16),
@@ -669,7 +750,7 @@ class DashboardCharts extends StatelessWidget {
             children: [
               Expanded(
                 flex: 3,
-                child: RegionalDistributionCard(),
+                child: SubdivisionsProjectsChart(),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -695,7 +776,7 @@ class DashboardCharts extends StatelessWidget {
               ),
               const SizedBox(width: 16),
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: ProjectCoordinatorsCard(),
               ),
             ],
