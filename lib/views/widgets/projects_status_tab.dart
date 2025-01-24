@@ -22,7 +22,7 @@ class ProjectsStatusTab extends StatelessWidget {
           ),
           const StatsRow(),
           const Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.symmetric(vertical: 24),
             child: DashboardCharts(),
           ),
           TableContainer(
