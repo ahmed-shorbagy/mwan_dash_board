@@ -29,7 +29,7 @@ class StatsRow extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: StatsCard(
-              title: 'المتوفر',
+              title: 'المفوتر',
               value: '555.76M',
               icon: SvgPicture.asset(Assets.assetsImagesInvoice1),
             ),
