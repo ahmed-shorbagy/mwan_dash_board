@@ -3,6 +3,7 @@ import 'package:dash_board/core/utils/app_styles.dart';
 import 'package:dash_board/views/widgets/helper_components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ProjectStageCard extends StatelessWidget {
   const ProjectStageCard({super.key});
@@ -196,7 +197,7 @@ class _ProjectDistributionCardState extends State<ProjectDistributionCard>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.2),
+                        color: kPrimaryColor.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text('الأقسام',
@@ -340,126 +341,99 @@ class SubdivisionsProjectsChart extends StatelessWidget {
       "تعزيز السلوكيات السليمة",
       "تعزيز الجاذبية الاستثمارية والأداء",
       "تنظيم قطاع إدارة الأداء",
-    ];
+    ].reversed.toList();
 
-    final values = [50.0, 45.0, 30.0, 35.0, 40.0, 25.0];
+    final values = [45.0, 50.0, 20.0, 35.0, 20.0, 25.0];
 
     return DashboardContainer(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title
           Text(
             "توزيع المشاريع للمحافظ الفرعية",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
           const SizedBox(height: 8),
-          // Subtitle
           Text(
             "عرض اجمالي المشاريع في كل محافظة مع الأهداف الاستراتيجية",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: Colors.white70,
             ),
           ),
           const SizedBox(height: 16),
-          // Chart
           Expanded(
-            child: BarChart(
-              BarChartData(
-                alignment: BarChartAlignment.spaceAround,
-                maxY: 50,
-                minY: 0,
-                gridData: FlGridData(
-                  show: true,
-                  drawHorizontalLine: true,
-                  drawVerticalLine: false,
-                  horizontalInterval: 10,
-                  getDrawingHorizontalLine: (value) => FlLine(
-                    color: kPrimaryColor.withOpacity(0.1),
-                    strokeWidth: 1,
-                  ),
+              child: SfCartesianChart(
+            borderWidth: 0,
+            primaryXAxis: CategoryAxis(
+              labelStyle: const TextStyle(
+                color: Colors.white54,
+                fontSize: 10,
+                overflow: TextOverflow.ellipsis,
+              ),
+              majorGridLines: const MajorGridLines(
+                color: Colors.transparent, // Remove vertical grid lines
+              ),
+              maximumLabels: categories.length,
+              labelIntersectAction: AxisLabelIntersectAction.wrap,
+            ),
+            primaryYAxis: NumericAxis(
+              labelStyle: const TextStyle(color: Colors.white70),
+              majorGridLines: const MajorGridLines(
+                color: Colors.white24, // Keep horizontal grid lines
+              ),
+              labelAlignment: LabelAlignment.center,
+              axisLine: const AxisLine(
+                color: Colors.transparent,
+              ),
+              opposedPosition: true, // Move Y-axis to the right
+              minimum: 0, // Start Y-axis at 0
+              maximum: 50, // End Y-axis at 100
+              interval: 25, // Show ticks at 0, 50, and 100
+            ),
+            plotAreaBorderWidth: 0,
+            series: <CartesianSeries>[
+              ColumnSeries<ChartData, String>(
+                dataSource: List.generate(
+                  categories.length,
+                  (index) => ChartData(categories[index], values[index]),
                 ),
-                titlesData: FlTitlesData(
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 80,
-                      getTitlesWidget: (value, meta) {
-                        if (value.toInt() >= 0 &&
-                            value.toInt() < categories.length) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: SizedBox(
-                              width: 60,
-                              child: Text(
-                                categories[value.toInt()],
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 3,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      interval: 10,
-                      getTitlesWidget: (value, meta) => Text(
-                        value.toInt().toString(),
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white70,
-                        ),
-                      ),
-                      reservedSize: 30,
-                    ),
-                  ),
-                  rightTitles: AxisTitles(),
-                  topTitles: AxisTitles(),
-                ),
-                borderData: FlBorderData(
-                  show: false,
-                ),
-                barGroups: List.generate(
-                  values.length,
-                  (i) => BarChartGroupData(
-                    x: i,
-                    barRods: [
-                      BarChartRodData(
-                        toY: values[i],
-                        width: 15,
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.circular(12),
-                        backDrawRodData: BackgroundBarChartRodData(
-                          show: true,
-                          toY: 50,
-                          color: kPrimaryColor.withOpacity(0.1),
-                        ),
-                      ),
-                    ],
-                  ),
+                xValueMapper: (ChartData data, _) => data.category,
+                yValueMapper: (ChartData data, _) => data.value,
+                color: kPrimaryColor,
+                width: 0.18,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(8),
                 ),
               ),
-            ),
-          ),
+              LineSeries<ChartData, String>(
+                dataSource: List.generate(
+                  categories.length,
+                  (index) => ChartData(categories[index], values[index]),
+                ),
+                xValueMapper: (ChartData data, _) => data.category,
+                yValueMapper: (ChartData data, _) => data.value,
+                color: const Color(0xFF3F434A),
+                width: 2,
+              ),
+            ],
+          )),
         ],
       ),
     );
   }
+}
+
+class ChartData {
+  final String category;
+  final double value;
+
+  ChartData(this.category, this.value);
 }
 
 class CoordinatorVisitsChart extends StatelessWidget {
@@ -483,7 +457,7 @@ class CoordinatorVisitsChart extends StatelessWidget {
       "التوسع في الخدمات",
       "تعزيز الكفاءة التشغيلية",
       "تحفيز التغيير الإيجابي",
-    ];
+    ].reversed.toList();
 
     final values = [
       12.0,
@@ -504,130 +478,83 @@ class CoordinatorVisitsChart extends StatelessWidget {
     ];
 
     return DashboardContainer(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "عدد المشاريع للإدارات التنفيذية",
-              style: AppStyles.tajawalBold19_2,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "عدد المشاريع للإدارات التنفيذية",
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
-            const SizedBox(height: 8),
-            Text(
-              "عرض اجمالي المشاريع مع قيم العقود الحالية بشكل شخطي",
-              style: AppStyles.tajawalLight12.copyWith(color: Colors.white70),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "عرض اجمالي المشاريع مع قيم العقود الحالية بشكل شخطي",
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white70,
             ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: BarChart(
-                BarChartData(
-                  alignment: BarChartAlignment.spaceAround,
-                  maxY: 20,
-                  minY: 0,
-                  barTouchData: BarTouchData(
-                    touchTooltipData: BarTouchTooltipData(
-                      getTooltipColor: (group) {
-                        return Colors.black87;
-                      },
-                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        return BarTooltipItem(
-                          "${categories[group.x.toInt()]}\n",
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "${rod.toY.toInt()}",
-                              style: const TextStyle(
-                                color: kPrimaryColor,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  gridData: FlGridData(
-                    show: true,
-                    drawHorizontalLine: true,
-                    drawVerticalLine: false,
-                    horizontalInterval: 5,
-                    getDrawingHorizontalLine: (value) => FlLine(
-                      color: Colors.white.withOpacity(0.1),
-                      strokeWidth: 1,
-                    ),
-                  ),
-                  titlesData: FlTitlesData(
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 60,
-                        getTitlesWidget: (value, meta) {
-                          if (value.toInt() >= 0 &&
-                              value.toInt() < categories.length) {
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: SizedBox(
-                                width: 50, // Restrict width for ellipses
-                                child: Text(
-                                  categories[value.toInt()],
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
-                                  textAlign: TextAlign.center,
-                                  style: AppStyles.tajawalLight11_2
-                                      .copyWith(color: Colors.white70),
-                                ),
-                              ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        interval: 5,
-                        getTitlesWidget: (value, meta) => Text(
-                          value.toInt().toString(),
-                          style: AppStyles.tajawalLight12
-                              .copyWith(color: Colors.white70),
-                        ),
-                        reservedSize: 30,
-                      ),
-                    ),
-                    rightTitles: AxisTitles(),
-                    topTitles: AxisTitles(),
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  barGroups: List.generate(
-                    values.length,
-                    (i) => BarChartGroupData(
-                      x: i,
-                      barRods: [
-                        BarChartRodData(
-                          toY: values[i],
-                          width: 12,
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.circular(12),
-                          backDrawRodData: BackgroundBarChartRodData(
-                            show: true,
-                            toY: 20, // Max value for the bar
-                            color: kPrimaryColor.withOpacity(0.1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: SfCartesianChart(
+              borderColor: Colors.transparent,
+              borderWidth: 0,
+              primaryXAxis: CategoryAxis(
+                labelStyle: const TextStyle(
+                  color: Colors.white54,
+                  fontSize: 10,
+                  overflow: TextOverflow.ellipsis,
                 ),
+                majorGridLines: const MajorGridLines(
+                  color: Colors.transparent, // Remove vertical grid lines
+                ),
+                maximumLabels: categories.length,
+                labelIntersectAction: AxisLabelIntersectAction.wrap,
               ),
+              primaryYAxis: NumericAxis(
+                labelStyle: const TextStyle(color: Colors.white70),
+                majorGridLines: const MajorGridLines(
+                  color: Colors.white24, // Keep horizontal grid lines
+                ),
+
+                labelAlignment: LabelAlignment.center,
+                axisLine: const AxisLine(color: Colors.transparent, width: 0),
+
+                opposedPosition: true, // Move Y-axis to the right
+                minimum: 0, // Start Y-axis at 0
+                maximum: 20, // End Y-axis at 100
+                interval: 10, // Show ticks at 0, 50, and 100
+              ),
+              series: <CartesianSeries>[
+                ColumnSeries<ChartData, String>(
+                  dataSource: List.generate(
+                    categories.length,
+                    (index) => ChartData(categories[index], values[index]),
+                  ),
+                  xValueMapper: (ChartData data, _) => data.category,
+                  yValueMapper: (ChartData data, _) => data.value,
+                  color: kPrimaryColor,
+                  width: 0.18,
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                ),
+                LineSeries<ChartData, String>(
+                  dataSource: List.generate(
+                    categories.length,
+                    (index) => ChartData(categories[index], values[index]),
+                  ),
+                  xValueMapper: (ChartData data, _) => data.category,
+                  yValueMapper: (ChartData data, _) => data.value,
+                  color: const Color(0xFF3F434A),
+                  width: 2,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -703,7 +630,7 @@ class ProjectCoordinatorsCard extends StatelessWidget {
                           child: Container(
                             height: 8,
                             decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.3),
+                              color: kPrimaryColor.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: FractionallySizedBox(
@@ -711,7 +638,7 @@ class ProjectCoordinatorsCard extends StatelessWidget {
                               widthFactor: validValues[index],
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: kPrimaryColor,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                               ),
