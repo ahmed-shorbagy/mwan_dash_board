@@ -13,62 +13,61 @@ class CustomTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return SizedBox(
+      height: 400, // Fixed height for the table
       child: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: DataTable(
-          border: TableBorder(
-            verticalInside: BorderSide(color: Color(0xff2E2E2E)),
-          ),
-          columnSpacing: 20,
-          horizontalMargin: 12,
-          headingRowColor: WidgetStateProperty.resolveWith<Color>(
-            (Set<WidgetState> states) => kItemBackGroundColor,
-          ),
-          columns: headers.map((header) {
-            return DataColumn(
-              label: Expanded(
-                child: Text(
-                  header,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+        scrollDirection: Axis.horizontal,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: DataTable(
+            border: TableBorder(
+              verticalInside: BorderSide(color: Color(0xff2E2E2E)),
+            ),
+            columnSpacing: 20,
+            horizontalMargin: 12,
+            columns: headers.map((header) {
+              return DataColumn(
+                label: Expanded(
+                  child: Text(
+                    header,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center, // Center-align header text
                   ),
-                  textAlign: TextAlign.center, // Center-align header text
                 ),
-              ),
-            );
-          }).toList(),
-          rows: List<DataRow>.generate(
-            rows.length,
-            (index) {
-              // Apply alternating row colors
-              final backgroundColor = index.isEven
-                  ? Colors.transparent // Default background (transparent)
-                  : kPrimaryColor
-                      .withOpacity(0.5); // Primary color with opacity
+              );
+            }).toList(),
+            rows: List<DataRow>.generate(
+              rows.length,
+              (index) {
+                // Apply alternating row colors
+                final backgroundColor = index.isEven
+                    ? Colors.transparent // Default background (transparent)
+                    : kPrimaryColor.withOpacity(0.3); // Example primary color
 
-              return DataRow(
-                color: WidgetStateProperty.resolveWith<Color>(
-                  (Set<WidgetState> states) => backgroundColor,
-                ),
-                cells: rows[index].map((cell) {
-                  return DataCell(
-                    Center(
-                      child: Text(
-                        cell,
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 14,
+                return DataRow(
+                  color: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) => backgroundColor,
+                  ),
+                  cells: rows[index].map((cell) {
+                    return DataCell(
+                      Center(
+                        child: Text(
+                          cell,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }).toList(),
-              );
-            },
+                    );
+                  }).toList(),
+                );
+              },
+            ),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:dash_board/core/theme/theme_constants.dart';
 import 'package:dash_board/core/utils/app_styles.dart';
+import 'package:dash_board/views/widgets/filter_drop_dwon.dart';
 import 'package:dash_board/views/widgets/helper_components.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -585,25 +586,7 @@ class ProjectCoordinatorsCard extends StatelessWidget {
                   SizedBox(
                     width: 60,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12),
-                    height: 48,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text("منسقين", style: AppStyles.tajawalLight18),
-                        const SizedBox(width: 10),
-                        const Icon(
-                          Icons.keyboard_arrow_down,
-                          color: kItemTitleTextColor,
-                        ),
-                      ],
-                    ),
-                  ),
+                  SimpleDropdown()
                 ],
               ),
             ),
@@ -682,7 +665,7 @@ class DashboardCharts extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: SubdivisionsProjectsChart(),
               ),
               const SizedBox(width: 16),
@@ -704,12 +687,12 @@ class DashboardCharts extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 3,
+                flex: 4,
                 child: CoordinatorVisitsChart(),
               ),
               const SizedBox(width: 16),
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: ProjectCoordinatorsCard(),
               ),
             ],

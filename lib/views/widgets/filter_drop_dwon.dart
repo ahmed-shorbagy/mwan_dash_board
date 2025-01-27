@@ -4,17 +4,29 @@ import 'package:dash_board/views/widgets/helper_components.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class FilterDropdown extends StatelessWidget {
+class FilterDropdown extends StatefulWidget {
   final String label;
-  final String value;
-  final VoidCallback? onTap;
+  final String initialValue;
 
   const FilterDropdown({
     super.key,
     required this.label,
-    required this.value,
-    this.onTap,
+    required this.initialValue,
   });
+
+  @override
+  State<FilterDropdown> createState() => _FilterDropdownState();
+}
+
+class _FilterDropdownState extends State<FilterDropdown> {
+  String? selectedValue;
+  final List<String> items = ['الكل', 'قسم 1', 'قسم 2', 'قسم 3', 'قسم 4'];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,41 +34,97 @@ class FilterDropdown extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: AppStyles.tajawalLight20),
+        Text(widget.label, style: AppStyles.tajawalLight20),
         const SizedBox(height: 8),
         DashboardContainer(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           margin: EdgeInsets.zero,
-          child: InkWell(
-            onTap: onTap,
+          child: DropdownButtonHideUnderline(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
                 minWidth: 120,
                 maxWidth: 200,
               ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
+              child: DropdownButton<String>(
+                value: selectedValue,
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: kItemTitleTextColor,
+                ),
+                style: AppStyles.tajawalLight18.copyWith(
+                  color: kItemTitleTextColor,
+                ),
+                dropdownColor: const Color(0xFF2E2E2E),
+                items: items.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
                     child: Text(
                       value,
                       style: AppStyles.tajawalLight18.copyWith(
                         color: kItemTitleTextColor,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: kItemTitleTextColor,
-                  ),
-                ],
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedValue = newValue;
+                  });
+                },
               ),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class SimpleDropdown extends StatefulWidget {
+  const SimpleDropdown({super.key});
+
+  @override
+  State<SimpleDropdown> createState() => _SimpleDropdownState();
+}
+
+class _SimpleDropdownState extends State<SimpleDropdown> {
+  String? selectedValue = 'منسقين';
+  final List<String> items = ['منسقين', 'مدير', 'موظف', 'مشرف'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      height: 48,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: selectedValue,
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            color: kItemTitleTextColor,
+          ),
+          style: AppStyles.tajawalLight18,
+          dropdownColor: const Color(0xFF2E2E2E),
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(
+                value,
+                style: AppStyles.tajawalLight18,
+              ),
+            );
+          }).toList(),
+          onChanged: (String? newValue) {
+            setState(() {
+              selectedValue = newValue;
+            });
+          },
+        ),
+      ),
     );
   }
 }

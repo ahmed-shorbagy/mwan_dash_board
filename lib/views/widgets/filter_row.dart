@@ -49,21 +49,21 @@ class FilterRow extends StatelessWidget {
                   children: [
                     const FilterDropdown(
                       label: "الأقسام",
-                      value: "الكل",
+                      initialValue: "الكل",
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 32),
                     const FilterDropdown(
                       label: "حالة المشاريع",
-                      value: "الكل",
+                      initialValue: "الكل",
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 32),
                     const FilterDateDropdown(
                       label: "فترة العرض",
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 32),
                     const FilterDropdown(
                       label: "تصنيف التعاقد",
-                      value: "الكل",
+                      initialValue: "الكل",
                     ),
                   ],
                 ),

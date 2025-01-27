@@ -126,13 +126,11 @@ class ChartContainer extends StatelessWidget {
 
 // Table container for data grids
 class TableContainer extends StatelessWidget {
-  final String title;
   final Widget table;
   final List<Widget>? actions;
 
   const TableContainer({
     super.key,
-    required this.title,
     required this.table,
     this.actions,
   });
@@ -144,16 +142,8 @@ class TableContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const Spacer(),
               if (actions != null) ...actions!,
             ],
           ),
