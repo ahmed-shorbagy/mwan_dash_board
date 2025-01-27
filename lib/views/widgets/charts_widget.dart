@@ -52,7 +52,8 @@ class ProjectStageCard extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'عرض اجمالي المشاريع بالنسبة للنموذج التشغيلي',
-              style: AppStyles.tajawalLight12.copyWith(color: Colors.white70),
+              style:
+                  AppStyles.tajawalLight14.copyWith(color: kItemTitleTextColor),
             ),
             const SizedBox(height: 16),
             Expanded(
@@ -189,7 +190,7 @@ class _ProjectDistributionCardState extends State<ProjectDistributionCard>
           children: [
             Row(
               children: [
-                Text('توزيع المشاريع', style: AppStyles.tajawalBold19_2),
+                Text('توزيع المشاريع', style: AppStyles.tajawalBold24),
                 const Spacer(),
                 Row(
                   children: [
@@ -221,8 +222,8 @@ class _ProjectDistributionCardState extends State<ProjectDistributionCard>
               ],
             ),
             Text('بالنسبة للأقسام وحالة التقدم',
-                style:
-                    AppStyles.tajawalLight12.copyWith(color: Colors.white70)),
+                style: AppStyles.tajawalLight14
+                    .copyWith(color: kItemTitleTextColor)),
             const SizedBox(height: 16),
             Row(
               children: [
@@ -350,22 +351,12 @@ class SubdivisionsProjectsChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "توزيع المشاريع للمحافظ الفرعية",
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text("توزيع المشاريع للمحافظ الفرعية",
+              style: AppStyles.tajawalBold24),
           const SizedBox(height: 8),
-          Text(
-            "عرض اجمالي المشاريع في كل محافظة مع الأهداف الاستراتيجية",
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
-          ),
+          Text("عرض اجمالي المشاريع في كل محافظة مع الأهداف الاستراتيجية",
+              style: AppStyles.tajawalLight18
+                  .copyWith(color: kItemTitleTextColor)),
           const SizedBox(height: 16),
           Expanded(
               child: SfCartesianChart(
@@ -482,22 +473,12 @@ class CoordinatorVisitsChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "عدد المشاريع للإدارات التنفيذية",
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+          Text("عدد المشاريع للإدارات التنفيذية",
+              style: AppStyles.tajawalBold24),
           const SizedBox(height: 8),
-          Text(
-            "عرض اجمالي المشاريع مع قيم العقود الحالية بشكل شخطي",
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
-          ),
+          Text("عرض اجمالي المشاريع مع قيم العقود الحالية بشكل شخطي",
+              style: AppStyles.tajawalLight18
+                  .copyWith(color: kItemTitleTextColor)),
           const SizedBox(height: 16),
           Expanded(
             child: SfCartesianChart(
@@ -597,15 +578,40 @@ class ProjectCoordinatorsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text('منسقين المشاريع', style: AppStyles.tajawalBold19_2),
-              ],
+            FittedBox(
+              child: Row(
+                children: [
+                  Text('منسقين المشاريع', style: AppStyles.tajawalBold24),
+                  SizedBox(
+                    width: 60,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    height: 48,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("منسقين", style: AppStyles.tajawalLight18),
+                        const SizedBox(width: 10),
+                        const Icon(
+                          Icons.keyboard_arrow_down,
+                          color: kItemTitleTextColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             Text(
               'عرض المشاريع بالنسبة لأسماء المنسقين',
-              style: AppStyles.tajawalLight12.copyWith(color: Colors.white70),
+              style:
+                  AppStyles.tajawalLight14.copyWith(color: kItemTitleTextColor),
             ),
             const SizedBox(height: 16),
             Expanded(

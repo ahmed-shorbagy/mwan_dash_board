@@ -57,9 +57,8 @@ class FilterRow extends StatelessWidget {
                       value: "الكل",
                     ),
                     const SizedBox(width: 16),
-                    const FilterDropdown(
+                    const FilterDateDropdown(
                       label: "فترة العرض",
-                      value: "يناير ٢٠٢٤ حتى ديسمبر ٢٠٢٤",
                     ),
                     const SizedBox(width: 16),
                     const FilterDropdown(

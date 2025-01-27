@@ -1,4 +1,5 @@
 import 'package:dash_board/core/theme/theme_constants.dart';
+import 'package:dash_board/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
 // Custom container widget for dashboard items
@@ -68,21 +69,10 @@ class StatsCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-                  Text(
-                    value,
-                    style: TextStyle(
-                      color: valueColor ?? Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text(title,
+                      style: AppStyles.tajawalLight20
+                          .copyWith(color: kItemTitleTextColor)),
+                  Text(value, style: AppStyles.dmSansBold28),
                 ],
               )
             ],
@@ -176,73 +166,3 @@ class TableContainer extends StatelessWidget {
 }
 
 // Example usage in your dashboard
-class DashboardExample extends StatelessWidget {
-  const DashboardExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            // Stats Row
-            SizedBox(
-              height: 120,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: StatsCard(
-                      title: 'إجمالي عدد المشاريع',
-                      value: '180',
-                      icon: Icon(Icons.bar_chart,
-                          color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                  Expanded(
-                    child: StatsCard(
-                      title: 'قيمة العقود الحالية',
-                      value: '858.09M',
-                      valueColor: Colors.orange,
-                    ),
-                  ),
-                  // Add more stats cards...
-                ],
-              ),
-            ),
-
-            // Charts Row
-            Expanded(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: ChartContainer(
-                      title: 'توزيع المشاريع',
-                      chart: const Placeholder(), // Your chart widget here
-                    ),
-                  ),
-                  Expanded(
-                    child: ChartContainer(
-                      title: 'توزيع المحافظات',
-                      chart: const Placeholder(), // Your chart widget here
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Table Section
-            Expanded(
-              child: TableContainer(
-                title: 'تفاصيل المشاريع',
-                table: const Placeholder(), // Your table widget here
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

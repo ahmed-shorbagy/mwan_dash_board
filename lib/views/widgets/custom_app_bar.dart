@@ -1,4 +1,5 @@
 import 'package:dash_board/core/theme/theme_constants.dart';
+import 'package:dash_board/core/utils/app_styles.dart';
 import 'package:dash_board/core/utils/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +17,7 @@ class CustomAppbar extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
+      width: double.infinity, // Ensure the app bar takes full width
       padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: const BoxDecoration(
         border: Border(
@@ -26,31 +28,32 @@ class CustomAppbar extends StatelessWidget {
         ),
       ),
       child: Row(
+        mainAxisAlignment:
+            MainAxisAlignment.spaceBetween, // Distribute children evenly
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Logo
-          Image.asset(
-            Assets.assetsImagesLogogpng,
-            height: 40,
-          ),
-          const SizedBox(width: 8), // Add some spacing
-
-          // Flexible space between logo and tab bar
-          Flexible(
-            flex: 1,
-            child: Container(), // Empty container to take up space
+          Row(
+            children: [
+              Image.asset(
+                Assets.assetsImagesLogogpng,
+                height: 40,
+              ),
+              const SizedBox(width: 8),
+            ],
           ),
 
           // Tab Bar
-          Flexible(
-            flex: 3, // Give more space to the tab bar
-            child: SizedBox(
-              width: screenWidth * 0.5, // Limit the width of the tab bar
+          Expanded(
+            child: Center(
               child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal, // Make it scrollable
+                scrollDirection: Axis.horizontal, // Allow scrolling for tabs
                 child: TabBar(
                   labelColor: kPrimaryColor,
+                  labelStyle: AppStyles.tajawalBold24,
                   controller: _tabController,
                   isScrollable: true,
+                  unselectedLabelStyle: AppStyles.tajawalRegular24,
                   indicator: UnderlineTabIndicator(
                     borderSide: BorderSide(
                       width: 3.0,
@@ -73,54 +76,39 @@ class CustomAppbar extends StatelessWidget {
             ),
           ),
 
-          // Flexible space between tab bar and profile section
-          Flexible(
-            flex: 1,
-            child: Container(), // Empty container to take up space
-          ),
-
           // Profile Section
-          Flexible(
-            flex: 1, // Give less space to the profile section
-            child: Row(
-              mainAxisSize: MainAxisSize.min, // Prevent overflow
-              children: [
-                // Profile Photo
-                Container(
-                  height: 42,
-                  width: 42,
-                  alignment: Alignment.center, // Center the photo
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: kPrimaryColor, width: 2),
-                    image: DecorationImage(
-                      fit: BoxFit.cover, // Ensure the photo fills the container
-                      image: AssetImage(Assets.assetsImagesProfile),
-                    ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Profile Photo
+              Container(
+                height: 42,
+                width: 42,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: kPrimaryColor, width: 2),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage(Assets.assetsImagesProfile),
                   ),
                 ),
-                const SizedBox(width: 8), // Reduce spacing
-                if (screenWidth > 600) // Show name only on larger screens
-                  const Center(
-                    child: Text(
-                      "محمد أشرف",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                const SizedBox(width: 24), // Reduce spacing
-                // Bell Icon
-                Center(
-                  child: SvgPicture.asset(
-                    Assets.assetsImagesBell,
-                    height: 24,
-                    width: 24,
-                  ),
+              ),
+              const SizedBox(width: 8),
+              if (screenWidth > 600)
+                Text(
+                  "محمد أشرف",
+                  style: AppStyles.tajawalRegular24,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-            ),
+              const SizedBox(width: 16),
+              // Bell Icon
+              SvgPicture.asset(
+                Assets.assetsImagesBell,
+                height: 24,
+                width: 24,
+              ),
+            ],
           ),
         ],
       ),

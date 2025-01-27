@@ -32,7 +32,10 @@ dependencies:
   fl_chart: ^0.70.2
   flutter:
     sdk: flutter
+  flutter_localizations: 
+    sdk: flutter
   flutter_svg: ^2.0.17
+  intl: 
   syncfusion_flutter_charts: ^28.1.41
 
 dev_dependencies:
@@ -80,3 +83,5 @@ flutter_assets:
   assets_path: assets/images/
   output_path: lib/core/utils/
   filename: assets.dart
+flutter_intl:
+  enabled: true

@@ -28,7 +28,7 @@ class _DashboardViewState extends State<DashboardView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1A1A1A), // Dark background color
+      backgroundColor: const Color(0xFF121212), // Dark background color
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
